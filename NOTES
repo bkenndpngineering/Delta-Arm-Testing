@@ -1,8 +1,0 @@
-Encoder calibration never ends and the motor keeps spinning. Likely due to the ODrive not finding the index pulse.
-Could also be due to the ODrive firmware.
-
-need to calibrate encoder: AXIS_STATE_ENCODER_INDEX_SEARCH
-
-the encoder was not giving an index pulse. Swapped it out and its working!!!
-
-need to continue with calibration

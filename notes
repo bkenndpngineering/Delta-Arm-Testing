@@ -1,0 +1,38 @@
+check max_endstop config
+
+Motor 3 --> enabled, gpio 8, min_endstop disabled
+Motor 2 --> disabled, gpio 0, min_endstop disabled --> fixed
+Motor 1 --> disabled, gpio 0, min_endstop disabled --> fixed 
+
+error:
+
+odrive0 was uncomnfigured!!!
+
+convention:
+limit axis 0 -- gpio 2
+limit axis 1 -- gpio 8
+
+Superstition:
+
+it is recommended to wait 10 seconds before rebooting odrive after saving configuration
+and waiting 5 seconds after to reconnect
+
+gpio 13, 16, 20 on RPI for limit switches
+
+
+switch to shorter cables
+
+disable endstops on odrive, increase current limit
+
+encoder mounting plate is extremely loose on motor 1. probably why it lost its index position.
+
+position controll works on motor 2 and 3. need to find index before position control works
+
+
+working settings: 
+need to increase current to support weight of arm assembly
+current_lim = 40
+requested_current_range = 60
+calibration_current = 25
+
+if swingd back fast, change motor direction, possibly just reboot and try again.
