@@ -149,7 +149,24 @@ print("homed Motor 3")
 time.sleep(3)
 
 
-#delay shutdown for a minute
+### debug ###
+print("Motor 1 axis error", hex(ax0.axis.error))
+print("Motor 1 motor error", hex(ax0.axis.motor.error))
+print("Motor 1 encoder error", hex(ax0.axis.encoder.error))
+print("Motor 1 controller error", hex(ax0.axis.controller.error))
+
+print("Motor 2 axis error", hex(ax1.axis.error))
+print("Motor 2 motor error", hex(ax1.axis.motor.error))
+print("Motor 2 encoder error", hex(ax1.axis.encoder.error))
+print("Motor 2 controller error", hex(ax1.axis.controller.error))
+
+print("Motor 3 axis error", hex(ax2.axis.error))
+print("Motor 3 motor error", hex(ax2.axis.motor.error))
+print("Motor 3 encoder error", hex(ax2.axis.encoder.error))
+print("Motor 3 controller error", hex(ax2.axis.controller.error))
+
+
+#delay shutdown
 delay_time = 30 # seconds before rebooting
 print("waiting", str(delay_time), "seconds")
 time.sleep(delay_time)
