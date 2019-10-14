@@ -22,7 +22,15 @@ GPIO.setup(limit_switch2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(limit_switch3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def getLim(pin):
-    if (not GPIO.input(pin)): return True
+    status1 = None
+    status2 = None
+    if (not GPIO.input(pin)): status1 = True
+    else: status1 = False
+    time.sleep(0.1) # simple debouncing, 100 ms dead time
+    if (not GPIO.input(pin)): status2 = True
+    else: status2 = False
+
+    if status1 and status2: return True
     else: return False
 def getLim1():
     return getLim(limit_switch1)
@@ -77,16 +85,16 @@ print("Connected to ODrives")
 # od1.axis0 --> motor 1
 ax0 = ODrive_Ease_Lib.ODrive_Axis(od1.axis0)
 ax0.index_and_hold(-1, 1)
-
+time.sleep(3)
 # od.axis1 --> motor 2
 ax1 = ODrive_Ease_Lib.ODrive_Axis(od1.axis1)
 ax1.index_and_hold(-1, 1)
-
+time.sleep(3)
 # Second ODrive controller
 # od.axis0 --> motor 3
 ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
 ax2.index_and_hold(-1, 1)
-
+time.sleep(3)
 
 
 
@@ -97,18 +105,48 @@ ax2.index_and_hold(-1, 1)
 # move arms up slowly until switch is triggered
 
 #homing motor 1
-
 ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 set_point = ax0.axis.controller.pos_setpoint
 lim1_status = getLim1()
 while (lim1_status == False):
     set_point -= 10
     ax0.axis.controller.pos_setpoint = set_point
-    print(set_point, lim1_status)
+    #print(set_point, lim1_status)
     time.sleep(0.5)
     lim1_status = getLim1()
-    
+
+ax0_home_position = set_point
 print("homed Motor 1")
+time.sleep(3)
+
+#homing motor 2
+ax1.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+set_point = ax1.axis.controller.pos_setpoint
+lim2_status = getLim2()
+while (lim2_status == False):
+    set_point -= 10
+    ax1.axis.controller.pos_setpoint = set_point
+    time.sleep(0.5)
+    lim2_status = getLim2()
+
+ax1_home_position = set_point
+print("homed Motor 2")
+time.sleep(3)
+
+#homing motor 3
+ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+set_point = ax2.axis.controller.pos_setpoint
+lim3_status = getLim3()
+while (lim3_status == False):
+    set_point -= 10
+    ax2.axis.controller.pos_setpoint = set_point
+    time.sleep(0.4)
+    lim3_status = getLim3() # uses 0.1 seconds
+    # 0.4 + 0.1 = 0.5 --> 20 pulses per second. good slow homing speed
+
+ax2_home_position = set_point
+print("homed Motor 3")
+time.sleep(3)
 
 
 #delay shutdown for a minute

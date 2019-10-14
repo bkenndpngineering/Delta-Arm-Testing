@@ -48,3 +48,5 @@ add negative velocity control to RPiOdrive lib. -- its there but I cannot get it
 
 
 ODRive gpio are 3.3v but 5v compliant. Encoders being powered off 5v can be a problem.
+
+got all three motors homed with limit switch. after third homes, motors 1 and 2 give out. probasbly a current control problem
