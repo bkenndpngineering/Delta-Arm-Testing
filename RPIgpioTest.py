@@ -11,4 +11,6 @@ GPIO.setup(limit2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(limit3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 while 1:
-    if (not GPIO.input(limit3)): print("PUSHED")
+    if (not GPIO.input(limit3)): print("lim3")
+    if (not GPIO.input(limit2)): print("lim2")
+    if (not GPIO.input(limit1)): print("lim1")

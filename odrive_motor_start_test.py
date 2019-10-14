@@ -4,11 +4,14 @@ import odrive.enums
 import time
 import RPi.GPIO as GPIO
 
+
+
 ### Setup Limit switches through RPi.GPIO ###
 
-limit_switch1 = 13 # RPi GPIO Pin number
-limit_switch2 = 16
-limit_switch3 = 20
+#RPi GPIO pin number
+limit_switch3 = 13 # motor 3 limit switch
+limit_switch2 = 16 # motor 2 lim switch
+limit_switch1 = 20 # motor 1 lim switch
 
 GPIO.setmode(GPIO.BCM)
 
@@ -18,7 +21,18 @@ GPIO.setup(limit_switch1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(limit_switch2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(limit_switch3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+def getLim(pin):
+    if (not GPIO.input(pin)): return True
+    else: return False
+def getLim1():
+    return getLim(limit_switch1)
+def getLim2():
+    return getLim(limit_switch2)
+def getLim3():
+    return getLim(limit_switch3)
+
 # read by: GPIO.input(pin) --> false if pushed, true if not pushed
+# use: if (not GPIO.input(pin)): print("pushed") --> get if pushed
 
 ### Finish Setup for Limit Switches ###
 
@@ -73,16 +87,35 @@ ax1.index_and_hold(-1, 1)
 ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
 ax2.index_and_hold(-1, 1)
 
-#configured ODrive limit switches in the following convention: axis 0 --> gpio 2, axis 1 -- > gpio 8
-# ax.axis.max_endstop.endstop_state_ --> bool
+
+
 
 #create homing sequence with use of endstops
 #using RPi.GPIO over ODrive endstops
 
+# get position of arms at limit switch
+# move arms up slowly until switch is triggered
+
+#homing motor 1
+
+ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+set_point = ax0.axis.controller.pos_setpoint
+lim1_status = getLim1()
+while (lim1_status == False):
+    set_point -= 10
+    ax0.axis.controller.pos_setpoint = set_point
+    print(set_point, lim1_status)
+    time.sleep(0.5)
+    lim1_status = getLim1()
+    
+print("homed Motor 1")
+
 
 #delay shutdown for a minute
-print("waiting 60 seconds")
-time.sleep(60)
+delay_time = 30 # seconds before rebooting
+print("waiting", str(delay_time), "seconds")
+time.sleep(delay_time)
+
 print("shutting down")
 #reboot both ODrives and exit
 try:
@@ -95,3 +128,4 @@ except:
     pass
 
 exit()
+

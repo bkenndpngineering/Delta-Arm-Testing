@@ -36,3 +36,15 @@ requested_current_range = 60
 calibration_current = 25
 
 if swingd back fast, change motor direction, possibly just reboot and try again.
+
+homing function
+
+switches need debounce? Arms are not rising to switches before it is triggered
+
+
+
+
+add negative velocity control to RPiOdrive lib. -- its there but I cannot get it to work rn
+
+
+ODRive gpio are 3.3v but 5v compliant. Encoders being powered off 5v can be a problem.
