@@ -52,3 +52,38 @@ ODRive gpio are 3.3v but 5v compliant. Encoders being powered off 5v can be a pr
 got all three motors homed with limit switch. after third homes, motors 1 and 2 give out. probasbly a current control problem
 
 fix current control problem + tune pos_gain to remove vibrations
+
+
+TODO:
+create README documentation with ODrive info, commands and usage, etc
+create config file of current ODrive config for future reference
+setup pycharm with RPI - remote deployment
+setup slack channel
+(me) -- find new tablet or something to work with - stop using blake's tablet
+note: since using rpi for stop switches, do not need new firmware
+figure out how to use endstops with ODrive
+figure out how to set a negative velocity
+
+put ODrives on top of project
+put power supply inside base of project
+cable management
+
+tighten all loose bolts
+install missing bolts in arm
+finalize mechanical
+finalize electrical
+
+finish homing function
+test setting three positions at once, one per motor
+tune current settings
+tune proportional control values -- stop wobble and get faster response
+lots of testing
+
+implement kinematics and verfy working with joystick control test program
+modularize code and create delta-arm class/API
+DONE HARDWARE PROGRAMING
+
+install UI on RPi and test displays
+install hardware backend delta-arm API into UI front end code
+lots of testing and iterative modifications
+
