@@ -13,7 +13,6 @@ limit axis 0 -- gpio 2
 limit axis 1 -- gpio 8
 
 Superstition:
-
 it is recommended to wait 10 seconds before rebooting odrive after saving configuration
 and waiting 5 seconds after to reconnect
 
@@ -39,7 +38,7 @@ if swingd back fast, change motor direction, possibly just reboot and try again.
 
 homing function
 
-switches need debounce? Arms are not rising to switches before it is triggered
+switches need debounce? Arms are not rising to switches before it is triggered -- Done
 
 
 
@@ -51,6 +50,7 @@ ODRive gpio are 3.3v but 5v compliant. Encoders being powered off 5v can be a pr
 
 got all three motors homed with limit switch. after third homes, motors 1 and 2 give out. probasbly a current control problem
 
+TODO:
 fix current control problem + tune pos_gain to remove vibrations
 
 
@@ -71,6 +71,7 @@ cable management
 tighten all loose bolts
 install missing bolts in arm
 finalize mechanical
+create HAT for RPi if limit switches + ODrive dont work
 finalize electrical
 
 finish homing function
@@ -87,3 +88,8 @@ install UI on RPi and test displays
 install hardware backend delta-arm API into UI front end code
 lots of testing and iterative modifications
 
+
+figure out why motors fail!
+axis error 0x40
+motor error 0x1
+its doing the thing where it goes up then slams back down again.
