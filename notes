@@ -108,4 +108,6 @@ redoing motor calibration per Blake's request.
 will then double check index posiion when new encoder cables are ready.
 will then make sure that the arms are securely screwed in with all the skrew holes used (all four with the right skrew sizes and threads. not this mix mash thats been going on)
 
+Only 2 and either 8 OR 9 -- figure out if it is 8 or 9 that works -- with GPIO/limit switches
 
+Odrive 3.5 and 3.6 run the same firmware, no significant differences

@@ -2,9 +2,9 @@ import odrive
 from RPi_ODrive import ODrive_Ease_Lib
 import odrive.enums
 import time
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
-
+"""
 
 ### Setup Limit switches through RPi.GPIO ###
 
@@ -44,7 +44,7 @@ def getLim3():
 
 ### Finish Setup for Limit Switches ###
 
-
+"""
 
 # make sure to reboot odrive between script runs
 
@@ -62,7 +62,7 @@ else:
 
 ODrive1_Serial_Number = 59877000491063
 #ODrive2_Serial_Number = 61951538836535
-ODrive2_Serial_Number = 35623325151307
+ODrive2_Serial_Number = 35623325151307 
 
 print("Serial Numbers: ")
 print (o[0].serial_number)
@@ -97,6 +97,7 @@ ax2.index_and_hold(-1, 1)
 time.sleep(3)
 
 
+"""
 
 #create homing sequence with use of endstops
 #using RPi.GPIO over ODrive endstops
@@ -148,6 +149,7 @@ ax2_home_position = set_point
 print("homed Motor 3")
 time.sleep(3)
 
+"""
 
 ### debug ###
 print("Motor 1 axis error", hex(ax0.axis.error))
