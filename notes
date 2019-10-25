@@ -93,3 +93,19 @@ figure out why motors fail!
 axis error 0x40
 motor error 0x1
 its doing the thing where it goes up then slams back down again.
+
+
+
+motor encoder cables were loose and one was detached. Creating more permant encoder cable solution.
+Using two different versions of ODrive board. Motor 1 and 2 are connected to an odrive V 3.5 and motor 3 is connected to an odrive v 3.6 --> might be a cause of some problems.
+
+odrive v3.3 and onwards have 5v tolerant pins. should we power encoders from 3.3v? maybe continue using 5v to account for any voltage drop in cables. 
+odrive v3.5 and onwards have noise suppression filters on the default step/dir pins. --> filter might cause a problem with something.
+*** for predictable results only have one feature enabled per any one pin *** --> double check this with the encoder and limit switch pins.
+see odrive --> interfaces documentation for more information
+
+redoing motor calibration per Blake's request.
+will then double check index posiion when new encoder cables are ready.
+will then make sure that the arms are securely screwed in with all the skrew holes used (all four with the right skrew sizes and threads. not this mix mash thats been going on)
+
+
