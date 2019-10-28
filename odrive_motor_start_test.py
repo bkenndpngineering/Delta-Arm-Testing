@@ -97,6 +97,7 @@ ax2.index_and_hold(-1, 1)
 time.sleep(3)
 
 
+# REWITE homing functions to use velocity instead of position control
 """
 
 #create homing sequence with use of endstops

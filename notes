@@ -110,4 +110,38 @@ will then make sure that the arms are securely screwed in with all the skrew hol
 
 Only 2 and either 8 OR 9 -- figure out if it is 8 or 9 that works -- with GPIO/limit switches
 
-Odrive 3.5 and 3.6 run the same firmware, no significant differences
+Odrive 3.5 and 3.6 run the same firmware, no significant difference
+
+
+
+
+
+current settings -- lower current to defaults? motor calibration failing with changed settings motor error 0x1
+
+new encoder extensions work
+now that the cables are plugged back in the motors started kind of workikng again
+motor 2 has a massive vibration when in position control -- might be due to high current and lack of load. should eventually adjust p loop gains?
+motor 1 does not calibrate. calibration fails -- motor error 0x1
+motor 3 works?
+
+trying to fix motor calibration error by lower current
+
+calibration current of 15 amps works!!! not 20 or 25 (was at 25)
+
+motor calibration complete -- index and hold working on motor 1 -- have not set calibration current back
+
+3 amps homing and 2 amps holding, no load -- motor 1
+
+
+motor 2 and 3 are great!
+motor 1 is still to rough to work with. maybe recalibrate with lower current limit (10A??)
+fix motor 1 and then add arms
+
+
+recalibrated the motor 1 again -- went smoothly
+index and hold is still very violent. After pushing it for a moment it calmed down significantly enough to be usable
+putting the arm back on motor 1 to test
+
+just found that the peice of metal that connects the bicep to the motor and thus the encoder, was loosly connected to the motor. The wiggle is what I think could have been the cause
+
+The arm works great when weighted down, need to tighten motor mountings. But in order to do that we will need to re index the encoderss
