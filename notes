@@ -165,3 +165,13 @@ motor 2 was using the yellow encoder gear head. The others are green. they seem 
 motor 1 and motor 2 have identical controller configrations.
 
 velocity control works on motor 1 without bicep and motor 3 (forgot if tested, I think it works) motor 2 could have been working, I also forgot
+
+____________
+later on the same day....
+got motor 2 up and running again. didn't need to use super glue
+
+
+redid motor 1 calibration -- no longer draws 20A. insane rattling but atleast it works. 
+checked vimdiff on the previous and new clibration, current sense paramaters changed a significant amount.
+
+all three motors can index and hold?
