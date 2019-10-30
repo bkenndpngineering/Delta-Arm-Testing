@@ -163,3 +163,5 @@ taking off motor 2 for repairs. encoder gear head fell off of the axle. Super gl
 motor 2 was using the yellow encoder gear head. The others are green. they seem to be interchangable but green looks slightly smaller
 
 motor 1 and motor 2 have identical controller configrations.
+
+velocity control works on motor 1 without bicep and motor 3 (forgot if tested, I think it works) motor 2 could have been working, I also forgot
