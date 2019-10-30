@@ -144,4 +144,22 @@ putting the arm back on motor 1 to test
 
 just found that the peice of metal that connects the bicep to the motor and thus the encoder, was loosly connected to the motor. The wiggle is what I think could have been the cause
 
-The arm works great when weighted down, need to tighten motor mountings. But in order to do that we will need to re index the encoderss
+The arm works great when weighted down, need to tighten motor mountings. But in order to do that we will need to re index the encoders
+
+tested motor 3 velocity -- works positive and negative
+
+
+---------------
+
+
+motor 1 -- enocder is indexed, motor recalibrated. Index and hold works without arm. With bicep it indexes then maxes out the powersupply at around 24 amps. need to fix, probably current settings again. change calbration current?
+motor 2 -- bicep is friction welded into place -- continued testing was made it imovable. Hammering the bicep caused the shaft of the encoder to loosen completely. need to remove the arm assembly, take off and repair the bicep, reinstall the encoder (super glue? seems to be holding on motor 1). Motor 1 cables have been getting caught on motor 2's bicep causing issues during index search. need to ziptie down if not already. index not finding
+motor 3 is still working fine
+
+just tweaked the calibration current for motor1. It is not the calibration that is drawing current: it is the position control. my theory is that since the oscilations never went away, they are still there even with the bicep on it. The oscilations are quite violent and the the additional load of the bicep might have caused the power draw if it is still trying to rapidly change direction. calibration current changed from 15 --> 25 amps.
+
+taking off motor 2 for repairs. encoder gear head fell off of the axle. Super glue works great. The mount for the encoder on motor 2 has only one of its screws visible from the top of the assembly. May need to remove one of the aluminum extrusion supports.
+
+motor 2 was using the yellow encoder gear head. The others are green. they seem to be interchangable but green looks slightly smaller
+
+motor 1 and motor 2 have identical controller configrations.
