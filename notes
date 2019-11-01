@@ -175,3 +175,10 @@ redid motor 1 calibration -- no longer draws 20A. insane rattling but atleast it
 checked vimdiff on the previous and new clibration, current sense paramaters changed a significant amount.
 
 all three motors can index and hold?
+
+
+----------------
+
+motor 2 can set velocity negative AND positive with bicep on. no problem. negative velocity moves the arm up. -20 is a good value for the homing sequence.
+
+

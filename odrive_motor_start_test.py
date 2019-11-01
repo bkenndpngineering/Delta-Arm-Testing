@@ -2,10 +2,9 @@ import odrive
 from RPi_ODrive import ODrive_Ease_Lib
 import odrive.enums
 import time
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
-"""
-
+#########################################################################################
 ### Setup Limit switches through RPi.GPIO ###
 
 #RPi GPIO pin number
@@ -43,8 +42,7 @@ def getLim3():
 # use: if (not GPIO.input(pin)): print("pushed") --> get if pushed
 
 ### Finish Setup for Limit Switches ###
-
-"""
+#########################################################################################
 
 # make sure to reboot odrive between script runs
 
@@ -85,16 +83,16 @@ print("Connected to ODrives")
 # od1.axis0 --> motor 1
 ax0 = ODrive_Ease_Lib.ODrive_Axis(od1.axis0)
 ax0.index_and_hold(-1, 1)
-time.sleep(3)
+time.sleep(1)
 # od.axis1 --> motor 2
 ax1 = ODrive_Ease_Lib.ODrive_Axis(od1.axis1)
 ax1.index_and_hold(-1, 1)
-time.sleep(3)
+time.sleep(1)
 # Second ODrive controller
 # od.axis0 --> motor 3
 ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
 ax2.index_and_hold(-1, 1)
-time.sleep(3)
+time.sleep(1)
 
 
 # REWITE homing functions to use velocity instead of position control
@@ -151,6 +149,46 @@ print("homed Motor 3")
 time.sleep(3)
 
 """
+# Velocity control homing function, homebrew style -- RPi.GPIO
+# creating homing sequence with use of endstops
+
+# get position at limit switch
+# move arms up slowly until switch is triggered
+
+
+# homing motor 1 
+ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+time.sleep(0.5)
+ax0.set_vel(-20)
+while (not getLim1()):
+    continue
+ax0.set_vel(0)
+print("homed motor 1")
+
+time.sleep(1)
+
+# homing motor 2 #### STAMP OF APPROVAL ####### IT WORKS PERFECTLY!!!!!!!!!
+ax1.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+time.sleep(0.5)
+ax1.set_vel(-20) # move arm up slowly with velocity control
+while (not getLim2()):
+    continue
+    #print(ax0.axis.controller.pos_setpoint)
+ax1.set_vel(0)
+print("homed motor 2")
+
+time.sleep(1)
+
+# homing motor 3
+ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
+time.sleep(0.5)
+ax2.set_vel(-20)
+while (not getLim3()):
+    continue
+ax2.set_vel(0)
+print("homed motor 3")
+
+
 
 ### debug ###
 print("Motor 1 axis error", hex(ax0.axis.error))
