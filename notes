@@ -152,7 +152,7 @@ tested motor 3 velocity -- works positive and negative
 ---------------
 
 
-motor 1 -- enocder is indexed, motor recalibrated. Index and hold works without arm. With bicep it indexes then maxes out the powersupply at around 24 amps. need to fix, probably current settings again. change calbration current?
+motor 1 -- enocder is indexed, motor recalibrated. Index and hold works without arm. With bicep it indexes then maxes out the powersupply at around 24 am need to fix, probably current settings again. change calbration current?
 motor 2 -- bicep is friction welded into place -- continued testing was made it imovable. Hammering the bicep caused the shaft of the encoder to loosen completely. need to remove the arm assembly, take off and repair the bicep, reinstall the encoder (super glue? seems to be holding on motor 1). Motor 1 cables have been getting caught on motor 2's bicep causing issues during index search. need to ziptie down if not already. index not finding
 motor 3 is still working fine
 
@@ -187,3 +187,17 @@ changed motor 3 current settings to the 40-60 pair that motor 2 is using (curren
 
 need to figure out conversion factor for encoder position and angle
 ax.axis.encoder.pos_estimate give position in counts
+
+
+---------------------
+
+
+the super glue on Motor 1 holding the encoder undone itself. reindexing 
+
+need to fix thew mis-allisgnment between the axle and the encoder
+
+expanding the holes on the plastic encoder bracket solved the problem. we shifted te bracket over a little bit so the encoder aligned with the shaft. i could not see any slippage
+
+
+motor 3 back in working order
+motor 1 lost index?!!

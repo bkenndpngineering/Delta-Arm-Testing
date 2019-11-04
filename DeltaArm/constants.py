@@ -19,8 +19,10 @@ z0 = 0
 
 
 ####### Extra Constants #######
+ENCODER_CPR = 8192
 
-CPR_TO_DEG = 8192/360
+CPR_TO_DEG = 360/ENCODER_CPR
+DEG_TO_CPR = ENCODER_CPR/360
 
 from math import radians
 phi_vals = [radians(210), radians(90), radians(330)]

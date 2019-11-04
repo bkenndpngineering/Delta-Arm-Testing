@@ -3,6 +3,7 @@ from RPi_ODrive import ODrive_Ease_Lib
 import odrive.enums
 import time
 import RPi.GPIO as GPIO
+from DeltaArm.kinematicFunctions import *
 
 #########################################################################################
 ### Setup Limit switches through RPi.GPIO ###
@@ -81,18 +82,21 @@ print("Connected to ODrives")
 
 # First ODrive controller
 # od1.axis0 --> motor 1
+print("Indexing motor 1")
 ax0 = ODrive_Ease_Lib.ODrive_Axis(od1.axis0)
-ax0.index_and_hold(-1, 1)
-time.sleep(1)
+#ax0.index_and_hold(-1, 1)
+#time.sleep(1)
 # od.axis1 --> motor 2
+print("Indexing motor 2")
 ax1 = ODrive_Ease_Lib.ODrive_Axis(od1.axis1)
 ax1.index_and_hold(-1, 1)
-time.sleep(1)
+#time.sleep(1)
 # Second ODrive controller
 # od.axis0 --> motor 3
+print("Indexing motor 3")
 ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
-ax2.index_and_hold(-1, 1)
-time.sleep(1)
+#ax2.index_and_hold(-1, 1)
+#time.sleep(1)
 
 
 # REWITE homing functions to use velocity instead of position control
@@ -155,7 +159,7 @@ time.sleep(3)
 # get position at limit switch
 # move arms up slowly until switch is triggered
 
-
+"""
 # homing motor 1 
 ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
@@ -167,7 +171,7 @@ print("homed motor 1")
 ax0.set_home()
 
 time.sleep(1)
-
+"""
 # homing motor 2 #### STAMP OF APPROVAL ####### IT WORKS PERFECTLY!!!!!!!!!
 ax1.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
@@ -180,7 +184,7 @@ print("homed motor 2")
 ax1.set_home()
 
 time.sleep(1)
-
+"""
 # homing motor 3
 ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
@@ -192,15 +196,22 @@ ax2.set_vel(0)
 print("homed motor 3")
 ax2.set_home()
 
+time.sleep(1)
 #######################
 # End homing sequence #
 #######################
+"""
 
 # get positon with ax.axis.get_pos()
 # uses ax.axis.encoder.pos_estimate
 
 # test out kinematics
 
+# positon test -- move 90 deg down from home position on motor 2
+time.sleep(2)
+angle = 90
+position = angle * DEG_TO_CPR
+ax1.set_pos(position)
 
 
 ### debug ###
@@ -221,7 +232,7 @@ print("Motor 3 controller error", hex(ax2.axis.controller.error))
 
 
 #delay shutdown
-delay_time = 30 # seconds before rebooting
+delay_time = 15 # seconds before rebooting
 print("waiting", str(delay_time), "seconds")
 time.sleep(delay_time)
 
