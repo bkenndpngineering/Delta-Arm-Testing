@@ -164,6 +164,7 @@ while (not getLim1()):
     continue
 ax0.set_vel(0)
 print("homed motor 1")
+ax0.set_home()
 
 time.sleep(1)
 
@@ -176,6 +177,7 @@ while (not getLim2()):
     #print(ax0.axis.controller.pos_setpoint)
 ax1.set_vel(0)
 print("homed motor 2")
+ax1.set_home()
 
 time.sleep(1)
 
@@ -184,9 +186,20 @@ ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
 ax2.set_vel(-20)
 while (not getLim3()):
-    continue
+    #continue
+    print(ax2.axis.encoder.pos_estimate)
 ax2.set_vel(0)
 print("homed motor 3")
+ax2.set_home()
+
+#######################
+# End homing sequence #
+#######################
+
+# get positon with ax.axis.get_pos()
+# uses ax.axis.encoder.pos_estimate
+
+# test out kinematics
 
 
 

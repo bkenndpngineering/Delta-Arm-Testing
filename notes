@@ -174,11 +174,16 @@ got motor 2 up and running again. didn't need to use super glue
 redid motor 1 calibration -- no longer draws 20A. insane rattling but atleast it works. 
 checked vimdiff on the previous and new clibration, current sense paramaters changed a significant amount.
 
-all three motors can index and hold?
-
+all three motors can index and home
 
 ----------------
 
 motor 2 can set velocity negative AND positive with bicep on. no problem. negative velocity moves the arm up. -20 is a good value for the homing sequence.
 
+changed motor 3 current settings to the 40-60 pair that motor 2 is using (current lim and range)
 
+2AMPS when homed!!!
+
+
+need to figure out conversion factor for encoder position and angle
+ax.axis.encoder.pos_estimate give position in counts
