@@ -201,3 +201,24 @@ expanding the holes on the plastic encoder bracket solved the problem. we shifte
 
 motor 3 back in working order
 motor 1 lost index?!!
+
+tightened all the top plate fasteners, all tight. 
+added three fasteners to all biceps.
+that messed with the limit switch positioning on motor 2. Actually the plastic under bracket broke.
+
+motor 3 hits limit switch when indexing. might need to re-index it at a lower position
+
+
+______________________
+centered home position
+(4.53, -0.871, -841.99)
+
+corner 1:
+(-378.48, -127.11, -751.05)
+
+corner 2:
+(81.46, -395.25, -749.80)
+
+corner 3:
+(150.09, 262.31, -772.76)
+coordinates are millimeters

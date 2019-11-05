@@ -84,82 +84,28 @@ print("Connected to ODrives")
 # od1.axis0 --> motor 1
 print("Indexing motor 1")
 ax0 = ODrive_Ease_Lib.ODrive_Axis(od1.axis0)
-#ax0.index_and_hold(-1, 1)
-#time.sleep(1)
+ax0.index_and_hold(-1, 1)
+time.sleep(1)
 # od.axis1 --> motor 2
 print("Indexing motor 2")
 ax1 = ODrive_Ease_Lib.ODrive_Axis(od1.axis1)
 ax1.index_and_hold(-1, 1)
-#time.sleep(1)
+time.sleep(1)
 # Second ODrive controller
 # od.axis0 --> motor 3
 print("Indexing motor 3")
 ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
-#ax2.index_and_hold(-1, 1)
-#time.sleep(1)
+ax2.index_and_hold(-1, 1)
+time.sleep(1)
 
 
-# REWITE homing functions to use velocity instead of position control
-"""
-
-#create homing sequence with use of endstops
-#using RPi.GPIO over ODrive endstops
-
-# get position of arms at limit switch
-# move arms up slowly until switch is triggered
-
-#homing motor 1
-ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
-set_point = ax0.axis.controller.pos_setpoint
-lim1_status = getLim1()
-while (lim1_status == False):
-    set_point -= 10
-    ax0.axis.controller.pos_setpoint = set_point
-    #print(set_point, lim1_status)
-    time.sleep(0.5)
-    lim1_status = getLim1()
-
-ax0_home_position = set_point
-print("homed Motor 1")
-time.sleep(3)
-
-#homing motor 2
-ax1.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
-set_point = ax1.axis.controller.pos_setpoint
-lim2_status = getLim2()
-while (lim2_status == False):
-    set_point -= 10
-    ax1.axis.controller.pos_setpoint = set_point
-    time.sleep(0.5)
-    lim2_status = getLim2()
-
-ax1_home_position = set_point
-print("homed Motor 2")
-time.sleep(3)
-
-#homing motor 3
-ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
-set_point = ax2.axis.controller.pos_setpoint
-lim3_status = getLim3()
-while (lim3_status == False):
-    set_point -= 10
-    ax2.axis.controller.pos_setpoint = set_point
-    time.sleep(0.4)
-    lim3_status = getLim3() # uses 0.1 seconds
-    # 0.4 + 0.1 = 0.5 --> 20 pulses per second. good slow homing speed
-
-ax2_home_position = set_point
-print("homed Motor 3")
-time.sleep(3)
-
-"""
 # Velocity control homing function, homebrew style -- RPi.GPIO
 # creating homing sequence with use of endstops
 
 # get position at limit switch
 # move arms up slowly until switch is triggered
 
-"""
+
 # homing motor 1 
 ax0.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
@@ -171,7 +117,7 @@ print("homed motor 1")
 ax0.set_home()
 
 time.sleep(1)
-"""
+
 # homing motor 2 #### STAMP OF APPROVAL ####### IT WORKS PERFECTLY!!!!!!!!!
 ax1.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
@@ -184,14 +130,14 @@ print("homed motor 2")
 ax1.set_home()
 
 time.sleep(1)
-"""
+
 # homing motor 3
 ax2.axis.requested_state = odrive.enums.AXIS_STATE_CLOSED_LOOP_CONTROL
 time.sleep(0.5)
 ax2.set_vel(-20)
 while (not getLim3()):
-    #continue
-    print(ax2.axis.encoder.pos_estimate)
+    continue
+    #print(ax2.axis.encoder.pos_estimate)
 ax2.set_vel(0)
 print("homed motor 3")
 ax2.set_home()
@@ -200,19 +146,96 @@ time.sleep(1)
 #######################
 # End homing sequence #
 #######################
-"""
 
-# get positon with ax.axis.get_pos()
+
+# get positon with ax.get_pos()
 # uses ax.axis.encoder.pos_estimate
 
 # test out kinematics
 
-# positon test -- move 90 deg down from home position on motor 2
-time.sleep(2)
-angle = 90
-position = angle * DEG_TO_CPR
-ax1.set_pos(position)
+# positon test -- move 90 deg down from home position on motor 2 # PASSED moved 90 deg downward
+#time.sleep(2)
+#angle = 90
+#position = angle * DEG_TO_CPR
+#ax1.set_pos(position)
 
+# create a loop that outputs kinmatic information
+# set axis to idle
+# spit out encoder_pos, motor angles, and end_effector coordinates
+# once the inverse is verified working, implement a forward kinematic example for position control
+# yay
+
+'''
+try:
+    ax0.axis.requested_state = odrive.enums.AXIS_STATE_IDLE
+    ax1.axis.requested_state = odrive.enums.AXIS_STATE_IDLE
+    ax2.axis.requested_state = odrive.enums.AXIS_STATE_IDLE
+    time.sleep(1)
+    while 1:
+        pos1 = ax0.get_pos()
+        angle1 = pos1 * CPR_TO_DEG
+        print("Motor 1 CPR: ", pos1)
+        print("Motor 1 ANGLE: ", angle1)
+
+        pos2 = ax1.get_pos()
+        angle2 = pos2 * CPR_TO_DEG
+        print("Motor 2 CPR: ", pos2)
+        print("Motor 2 ANGLE: ", angle2)
+
+        pos3 = ax2.get_pos()
+        angle3 = pos3 * CPR_TO_DEG
+        print("Motor 3 CPR: ", pos3)
+        print("Motor 3 ANGLE: ", angle3)
+
+        (x, y, z) = forward_kinematics(angle1, angle2, angle3)
+
+        print("COORDINATES: ", (x,y,z))
+
+
+except Exception as e:
+    print("ERROROROROROR!!!!", e)
+'''
+
+def move_to_coordinates(x, y, z):
+    (angle1, angle2, angle3) = compute_triple_inverse_kinematics(x,y,z)
+    pos1 = angle1 * DEG_TO_CPR
+    pos2 = angle2 * DEG_TO_CPR
+    pos3 = angle3 * DEG_TO_CPR
+    ax0.set_pos(pos1)
+    ax1.set_pos(pos2)
+    ax2.set_pos(pos3)
+
+move_to_coordinates(0, 0, -680)
+time.sleep(10)
+move_to_coordinates(0, 0, -830)
+
+### 
+'''
+time.sleep(5)
+# move down to a lower position
+x = 0 
+y = 0
+z = -680
+(angle1, angle2, angle3) = compute_triple_inverse_kinematics(x,y,z)
+pos1 = angle1 * DEG_TO_CPR
+pos2 = angle2 * DEG_TO_CPR
+pos3 = angle3 * DEG_TO_CPR
+ax0.set_pos(pos1)
+ax1.set_pos(pos2)
+ax2.set_pos(pos3)
+time.sleep(10)
+
+z = -830
+(angle1, angle2, angle3) = compute_triple_inverse_kinematics(x,y,z)
+pos1 = angle1 * DEG_TO_CPR
+pos2 = angle2 * DEG_TO_CPR
+pos3 = angle3 * DEG_TO_CPR
+ax0.set_pos(pos1)
+ax1.set_pos(pos2)
+ax2.set_pos(pos3)
+time.sleep(10)
+'''
+###
 
 ### debug ###
 print("Motor 1 axis error", hex(ax0.axis.error))
