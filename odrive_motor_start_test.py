@@ -207,7 +207,16 @@ def move_to_coordinates(x, y, z):
 
 move_to_coordinates(0, 0, -680)
 time.sleep(10)
+move_to_coordinates(-378, -127, -680)
+time.sleep(5)
+move_to_coordinates(81, -395, -680)
+time.sleep(5)
+move_to_coordinates(150, 260, -680)
+time.sleep(5)
+move_to_coordinates(0, 0, -680)
+time.sleep(5)
 move_to_coordinates(0, 0, -830)
+
 
 ### 
 '''
