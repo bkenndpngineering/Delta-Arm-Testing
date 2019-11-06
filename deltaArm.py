@@ -163,13 +163,13 @@ class DeltaArm():
 
     def getCoordinates(self):
         if self.initialized:
-            pos1 = ax0.get_pos()
+            pos1 = self.ax0.get_pos()
             angle1 = pos1 * CPR_TO_DEG
 
-            pos2 = ax1.get_pos()
+            pos2 = self.ax1.get_pos()
             angle2 = pos2 * CPR_TO_DEG
 
-            pos3 = ax2.get_pos()
+            pos3 = self.ax2.get_pos()
             angle3 = pos3 * CPR_TO_DEG
 
             (x, y, z) = forward_kinematics(angle1, angle2, angle3)
