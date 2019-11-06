@@ -1,6 +1,3 @@
-import sys
-sys.path.append("/home/pi/delta-arm-testing/DeltaArm")
-
 import math
 from constants import *
 

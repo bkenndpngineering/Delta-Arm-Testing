@@ -3,7 +3,7 @@ from RPi_ODrive import ODrive_Ease_Lib
 import odrive.enums
 import time
 import RPi.GPIO as GPIO
-from DeltaArm.kinematicFunctions import *
+from kinematicFunctions import *
 
 #########################################################################################
 ### Setup Limit switches through RPi.GPIO ###
