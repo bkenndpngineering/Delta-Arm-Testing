@@ -6,26 +6,34 @@ from kinematicFunctions import *
 import time
 
 class DeltaArm():
-    self.initialized = False    # if the arm is not initialized no commands will work
+    def __init__(self):
+        self.initialized = False    # if the arm is not initialized no motor related commands will work. represents the ODrive harware
+        self.initializedGPIO = False    # if the gpio is not initalized, polling the limit switches will return None. represents the RPi.GPIO hardware
 
-    self.limitSwitchPin3 = 13   # motor 3 limit switch pin
-    self.limitSwitchPin2 = 16   # motor 2 limit switch pin
-    self.limitSwitchPin1 = 20   # motor 1 limit switch pin
+        self.limitSwitchPin3 = 13   # motor 3 limit switch pin
+        self.limitSwitchPin2 = 16   # motor 2 limit switch pin
+        self.limitSwitchPin1 = 20   # motor 1 limit switch pin
 
-    self.ODriveSerialNumber1 = 59877000491063   # first ODrive serial number. Controls motors 1 and 2
-    self.ODriveSerialNumber2 = 35623325151307   # second ODrive serial number. Controls motor 3
+        self.ODriveSerialNumber1 = 59877000491063   # first ODrive serial number. Controls motors 1 and 2
+        self.ODriveSerialNumber2 = 35623325151307   # second ODrive serial number. Controls motor 3
 
-    self.ax0 = None             # axis 0 of the first ODrive. Motor 1
-    self.ax1 = None             # axis 1 of the first ODrive. Motor 2
-    self.ax2 = None             # axis 0 of the second ODrive. Motor 3
+        self.od1 = None             # first ODrive instance
+        self.od2 = None             # second ODrive instance
+
+        self.ax0 = None             # axis 0 of the first ODrive. Motor 1
+        self.ax1 = None             # axis 1 of the first ODrive. Motor 2
+        self.ax2 = None             # axis 0 of the second ODrive. Motor 3
 
     def configureGPIO(self):
         # configure limit switches on RPi's GPIO
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.limitSwitchPin3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.limitSwitchPin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.limitSwitchPin1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(self.limitSwitchPin3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(self.limitSwitchPin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(self.limitSwitchPin1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        except:
+            return False
+
         return True
 
     def getLim(self, pin):
@@ -45,15 +53,15 @@ class DeltaArm():
 
     def getLim3(self):
         # return status of limit switch 3
-        if self.initialized:
+        if self.initializedGPIO:
             return self.getLim(self.limitSwitchPin3)
     def getLim2(self):
         # return status of limit switch 2
-        if self.initialized:
+        if self.initializedGPIO:
             return self.getLim(self.limitSwitchPin2)
     def getLim1(self):
         # return status of limit switch 1
-        if self.initialized:
+        if self.initializedGPIO:
             return self.getLim(self.limitSwitchPin1)
 
     def connectODrive(self):
@@ -63,12 +71,12 @@ class DeltaArm():
         if len(o) != 2:
             return False
         
-        if o[0].serial_number = self.ODriveSerialNumber1: od1 = o[0]
-        elif o[0].serial_number = self.ODriveSeriaNumber2: od2 = o[0]
+        if o[0].serial_number == self.ODriveSerialNumber1: od1 = o[0]
+        elif o[0].serial_number == self.ODriveSeriaNumber2: od2 = o[0]
         else: return False
 
-        if o[1].serial_number = self.ODriveSerialNumber1: od1 = o[1]
-        elif o[1].serial_number = self.ODriveSerialNumber2: od2 = o[1]
+        if o[1].serial_number == self.ODriveSerialNumber1: od1 = o[1]
+        elif o[1].serial_number == self.ODriveSerialNumber2: od2 = o[1]
         else: return False
 
         # preserve ODrive object for shutdown method
@@ -78,7 +86,7 @@ class DeltaArm():
         # initialize ODrive motor axis
         self.ax0 = ODrive_Ease_Lib.ODrive_Axis(od1.axis0)
         self.ax1 = ODrive_Ease_Lib.ODrive_Axis(od1.axis1)
-        self.ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis2)
+        self.ax2 = ODrive_Ease_Lib.ODrive_Axis(od2.axis0)
 
         return True
 
@@ -109,7 +117,7 @@ class DeltaArm():
 
         # home motor 3
         self.ax2.set_vel(-20)
-        while (not self.getLim3()))
+        while (not self.getLim3()):
             continue
         self.ax2.set_vel(0)
         self.ax2.set_home()
@@ -134,13 +142,14 @@ class DeltaArm():
 
     def initialize(self):
         # configure GPIO for limit switches
-        a = self.configureGPIO()
+        self.initializedGPIO = self.configureGPIO()
         # connect to ODrives
-        b = self.connectODrive()
+        ODriveConnected = self.connectODrive()
 
-        if (a == True) and (b == True):
-            c = self.homeMotors()
-            if (c == True): self.initialized = True
+        if (self.initializedGPIO == True) and (ODriveConnected == True):
+            # if GPIO and ODrive are setup properly, attempt to home
+            HomedMotors = self.homeMotors()
+            if (HomedMotors == True): self.initialized = True
 
     def moveToCoordinates(self, x, y, z):
         if self.initialized:
@@ -152,7 +161,7 @@ class DeltaArm():
             self.ax1.set_pos(pos2)
             self.ax2.set_pos(pos3)
 
-    def getCoordinates(self)
+    def getCoordinates(self):
         if self.initialized:
             pos1 = ax0.get_pos()
             angle1 = pos1 * CPR_TO_DEG
@@ -167,16 +176,17 @@ class DeltaArm():
             return ((x, y, z))
 
     def shutdown(self):
-        # reset and disconnect from the first ODrive
-        try:
-            self.od1.reboot()
-        except:
-            pass
+        if self.initialized:
+            # reset and disconnect from the first ODrive
+            try:
+                self.od1.reboot()
+            except:
+                pass
 
-        # reset and disconnect from the second ODrive
-        try:
-            self.od2.reboot()
-        except:
-            pass
+            # reset and disconnect from the second ODrive
+            try:
+                self.od2.reboot()
+            except:
+                pass
 
-        self.initialized = False
+            self.initialized = False
