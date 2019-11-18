@@ -18,7 +18,17 @@ print(version)
 while True:
     if (cyprus.read_gpio() & 0b0001):    # binary bitwise AND of the value returned from read.gpio()
         print("GPIO on port P6 is HIGH")
-        sleep(.1)
     else:
         print("GPIO on port P6 is LOW")
-        sleep(.1)
+
+    if (cyprus.read_gpio() & 0b0010):    # binary bitwise AND of the value returned from read.gpio()
+        print("GPIO on port P7 is HIGH")
+    else:
+        print("GPIO on port P7 is LOW")
+
+    if (cyprus.read_gpio() & 0b0100):    # binary bitwise AND of the value returned from read.gpio()
+        print("GPIO on port P8 is HIGH")
+    else:
+        print("GPIO on port P8 is LOW")
+
+    sleep(0.1)

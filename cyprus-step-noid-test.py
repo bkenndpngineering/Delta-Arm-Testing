@@ -36,8 +36,10 @@ def motor_rotate(degrees):
     print(str(position))
     s0.set_as_home()
 
-#sleep(1)
-#solenoid_pulse(1)
+# include stepper.home() in initialization routine
+
+sleep(1)
+solenoid_pulse(1)
 sleep(1)
 motor_rotate(180)
 sleep(1)

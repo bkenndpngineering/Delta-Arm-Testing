@@ -1,14 +1,20 @@
+import os
+import spidev
+from pidev.stepper import stepper
+from pidev.Cyprus_Commands import Cyprus_Commands_RPi as cyprus
+from Slush.Devices import L6470Registers
 import odrive
 from RPi_ODrive import ODrive_Ease_Lib
 import RPi.GPIO as GPIO
 from kinematicFunctions import *
-
 import time
 
 class DeltaArm():
     def __init__(self):
         self.initialized = False    # if the arm is not initialized no motor related commands will work. represents the ODrive harware
-        self.initializedGPIO = False    # if the gpio is not initalized, polling the limit switches will return None. represents the RPi.GPIO hardware
+        
+        self.spi = None             # spidev
+        self.stepper = None         # stepper motor object
 
         self.limitSwitchPin3 = 13   # motor 3 limit switch pin
         self.limitSwitchPin2 = 16   # motor 2 limit switch pin
@@ -24,45 +30,39 @@ class DeltaArm():
         self.ax1 = None             # axis 1 of the first ODrive. Motor 2
         self.ax2 = None             # axis 0 of the second ODrive. Motor 3
 
-    def configureGPIO(self):
-        # configure limit switches on RPi's GPIO
-        try:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(self.limitSwitchPin3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(self.limitSwitchPin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(self.limitSwitchPin1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        except:
+    def rotateStepper(self, degree):
+        if self.initialized:
+            steps = degree * 6400/360
+            self.stepper.goTo(int(steps))
+            position = self.stepper.get_position_in_units()
+            self.stepper.set_as_home()
+
+    def powerSolenoid(self, state):
+        if self.initialized:
+            if state == True:
+                cyprus.set_pwm_values(1, period_value=100000, compare_value=500000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            elif state == False:
+                cyprus.set_pwm_values(1, period_value=100000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+            else:
+                return
+
+    def getLim1(self):
+        if (cyprus.read_gpio() & 0b0001):
             return False
+        else:
+            return True
 
-        return True
-
-    def getLim(self, pin):
-        # poll status of RPi GPIO input pin
-        status1 = None
-        status2 = None
-
-        # simple debouncing. 100ms dead time
-        if (not GPIO.input(pin)): status1 = True
-        else: status1 = False
-        time.sleep(0.1)
-        if (not GPIO.input(pin)): status2 = True
-        else: status2 = False
-
-        if status1 and status2: return True
-        else: return False
+    def getLim2(self):
+        if (cyprus.read_gpio() & 0b0010):
+            return False
+        else:
+            return True
 
     def getLim3(self):
-        # return status of limit switch 3
-        if self.initializedGPIO:
-            return self.getLim(self.limitSwitchPin3)
-    def getLim2(self):
-        # return status of limit switch 2
-        if self.initializedGPIO:
-            return self.getLim(self.limitSwitchPin2)
-    def getLim1(self):
-        # return status of limit switch 1
-        if self.initializedGPIO:
-            return self.getLim(self.limitSwitchPin1)
+        if (cyprus.read_gpio() & 0b0100):
+            return False
+        else:
+            return True
 
     def connectODrive(self):
         # find two ODrives and assign them to the correct motors
@@ -141,12 +141,17 @@ class DeltaArm():
         return True
 
     def initialize(self):
-        # configure GPIO for limit switches
-        self.initializedGPIO = self.configureGPIO()
+        # setup steppermotor, limit switches, and solenoid
+        self.spi = spidev.SpiDev()
+        cyprus.initialize()
+        version = cyprus.read_firmware_version()
+        self.stepper = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20, steps_per_unit=200, speed=8)
+        self.stepper.home(1)
+
         # connect to ODrives
         ODriveConnected = self.connectODrive()
 
-        if (self.initializedGPIO == True) and (ODriveConnected == True):
+        if (ODriveConnected == True):
             # if GPIO and ODrive are setup properly, attempt to home
             HomedMotors = self.homeMotors()
             if (HomedMotors == True): self.initialized = True
@@ -188,5 +193,11 @@ class DeltaArm():
                 self.od2.reboot()
             except:
                 pass
+
+            # close out of Cyprus and Slush Engine
+            self.stepper.free_all()
+            self.spi.close()
+            GPIO.cleanup()
+            cyprus.close()
 
             self.initialized = False
