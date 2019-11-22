@@ -9,16 +9,20 @@ import RPi.GPIO as GPIO
 from kinematicFunctions import *
 import time
 
+"""
+DeltaArm API V.2 by Braedan Kennedy (bkenndpngineering)
+Supplemental development by Joseph Pearman and Philip Nordblad
+
+for use with the DPEA Robot Penguin project
+modules can be used for any Delta Arm project
+"""
+
 class DeltaArm():
     def __init__(self):
         self.initialized = False    # if the arm is not initialized no motor related commands will work. represents the ODrive harware
         
         self.spi = None             # spidev
         self.stepper = None         # stepper motor object
-
-        self.limitSwitchPin3 = 13   # motor 3 limit switch pin
-        self.limitSwitchPin2 = 16   # motor 2 limit switch pin
-        self.limitSwitchPin1 = 20   # motor 1 limit switch pin
 
         self.ODriveSerialNumber1 = 59877000491063   # first ODrive serial number. Controls motors 1 and 2
         self.ODriveSerialNumber2 = 35623325151307   # second ODrive serial number. Controls motor 3
@@ -32,12 +36,11 @@ class DeltaArm():
 
     def rotateStepper(self, degree):
         if self.initialized:
-            steps = degree * 6400/360
-            self.stepper.goTo(int(steps))
-            position = self.stepper.get_position_in_units()
-            self.stepper.set_as_home()
+            steps = degree * DEG_TO_STEPS
+            self.stepper.relative_move(steps)
 
     def powerSolenoid(self, state):
+        # Written by Joseph Pearlman and Philip Nordblad
         if self.initialized:
             if state == True:
                 cyprus.set_pwm_values(1, period_value=100000, compare_value=500000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
@@ -47,18 +50,21 @@ class DeltaArm():
                 return
 
     def getLim1(self):
+        # return status of limit switch 1, of motor 1
         if (cyprus.read_gpio() & 0b0001):
             return False
         else:
             return True
 
     def getLim2(self):
+        # return status of limit switch 2, of motor 2
         if (cyprus.read_gpio() & 0b0010):
             return False
         else:
             return True
 
     def getLim3(self):
+        # return status of limit switch 3, of motor 3
         if (cyprus.read_gpio() & 0b0100):
             return False
         else:
@@ -123,6 +129,7 @@ class DeltaArm():
         self.ax2.set_home()
         time.sleep(1)
 
+        # if anything is wrong with ODrive, the homing sequence will be registered as a failure
         if self.ax0.axis.error != 0: return False
         if self.ax0.axis.motor.error != 0: return False
         if self.ax0.axis.encoder.error != 0: return False
@@ -141,12 +148,11 @@ class DeltaArm():
         return True
 
     def initialize(self):
-        # setup steppermotor, limit switches, and solenoid
+        # setup limit switches and solenoid
         self.spi = spidev.SpiDev()
         cyprus.initialize()
         version = cyprus.read_firmware_version()
-        self.stepper = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20, steps_per_unit=200, speed=8)
-        self.stepper.home(1)
+        print("Found CyPrus, Firmware version: ", version)
 
         # connect to ODrives
         ODriveConnected = self.connectODrive()
@@ -156,9 +162,21 @@ class DeltaArm():
             HomedMotors = self.homeMotors()
             if (HomedMotors == True): self.initialized = True
 
-    def moveToCoordinates(self, x, y, z):
         if self.initialized:
-            (angle1, angle2, angle3) = compute_triple_inverse_kinematics(x, y, z)
+            # setup and home stepper
+            self.stepper = stepper(port=0, micro_steps=32, hold_current=40, run_current=40, accel_current=40,
+                                   deaccel_current=40, steps_per_unit=200,
+                                   speed=1)  # slower speed and a higher current means more torque.
+            self.stepper.home(1)
+
+    def moveToCoordinates(self, desired_x, desired_y, desired_z):
+        # move to coordinate position
+        # coordinates are in millimeters
+        # is a blocking function, returns when position is reached
+        tolerance = 5     # how close the arm must be to the desired coordinates to be considered "there" AKA the window
+
+        if self.initialized:
+            (angle1, angle2, angle3) = compute_triple_inverse_kinematics(desired_x, desired_y, desired_z)
             pos1 = angle1 * DEG_TO_CPR
             pos2 = angle2 * DEG_TO_CPR
             pos3 = angle3 * DEG_TO_CPR
@@ -166,7 +184,22 @@ class DeltaArm():
             self.ax1.set_pos(pos2)
             self.ax2.set_pos(pos3)
 
+            # implementation of the old wait function of the stepper motor driver, but now for ODrive
+            x_lower = desired_x - tolerance
+            x_upper = desired_x + tolerance
+            y_lower = desired_y - tolerance
+            y_upper = desired_y + tolerance
+            z_lower = desired_z - tolerance
+            z_upper = desired_z + tolerance
+            while True:
+                (current_x, current_y, current_z) = self.getCoordinates()
+                if (x_lower <= current_x <= x_upper) and (y_lower <= current_y <= y_upper) and (z_lower <= current_z <= z_upper):
+                    break
+
+            return
+
     def getCoordinates(self):
+        # return coordinate position of the end effector
         if self.initialized:
             pos1 = self.ax0.get_pos()
             angle1 = pos1 * CPR_TO_DEG
@@ -194,7 +227,7 @@ class DeltaArm():
             except:
                 pass
 
-            # close out of Cyprus and Slush Engine
+            # close out of Cyprus and Slush Engine and RPi GPIO
             self.stepper.free_all()
             self.spi.close()
             GPIO.cleanup()

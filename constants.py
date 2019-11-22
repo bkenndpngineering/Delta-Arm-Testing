@@ -19,6 +19,8 @@ z0 = 0
 
 
 ####### Extra Constants #######
+DEG_TO_STEPS = 6400/360         # for the stepper motor
+
 ENCODER_CPR = 8192
 
 CPR_TO_DEG = 360/ENCODER_CPR

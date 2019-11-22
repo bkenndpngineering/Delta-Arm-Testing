@@ -1,52 +1,36 @@
+# minimalistic script to test API functionality
 from deltaArm import DeltaArm
 import time
 
 arm = DeltaArm()
 
-print("Running initialization in 5 seconds")
-time.sleep(5)
+print("Running initialization")
 arm.initialize()
-time.sleep(5)
 print("finished init")
 
-"""
 print("rotating stepper")
-arm.rotateStepper(90)
-time.sleep(2)
-print("rotating stepper")
-arm.rotateStepper(-90)
-time.sleep(2)
-"""
-"""
-while arm.getLim1() == False:
-    pass
-print("found lim 1")
-while arm.getLim2() == False:
-    pass
-print("found lim 2")
-while arm.getLim3() == False:
-    pass
-print("found lim 3")
+arm.rotateStepper(180)
+print("rotating stepper again")
+arm.rotateStepper(-180)
 
 print("solenoid true")
 arm.powerSolenoid(True)
 time.sleep(2)
-
 print("solenoid false")
 arm.powerSolenoid(False)
-time.sleep(2)
-"""
+
+# kinematic test
 print("moving to (0, 0, -680)")
 arm.moveToCoordinates(0, 0, -680)
-time.sleep(5)
-
 print("get coordinates test:", arm.getCoordinates())
-
 print("moving to (0, 0, -830)")
 arm.moveToCoordinates(0, 0, -830)
-time.sleep(5)
-
 print("get coordinates test:", arm.getCoordinates())
+
+# rapid sequential movement test
+arm.moveToCoordinates(0, 0, -680)
+arm.moveToCoordinates(0, 0, -750)
+arm.moveToCoordinates(0, 0, -830)
 
 print("shutoff in 5 seconds")
 time.sleep(5)
