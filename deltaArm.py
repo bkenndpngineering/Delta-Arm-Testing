@@ -148,6 +148,7 @@ class DeltaArm():
         return True
 
     def initialize(self):
+        # returns true is successful, false if not
         # setup limit switches and solenoid
         self.spi = spidev.SpiDev()
         cyprus.initialize()
@@ -168,6 +169,11 @@ class DeltaArm():
                                    deaccel_current=40, steps_per_unit=200,
                                    speed=1)  # slower speed and a higher current means more torque.
             self.stepper.home(1)
+
+            return True
+
+        else:
+            return False
 
     def moveToCoordinates(self, desired_x, desired_y, desired_z):
         # move to coordinate position

@@ -5,7 +5,8 @@ import time
 arm = DeltaArm()
 
 print("Running initialization")
-arm.initialize()
+if not arm.initialize():
+    exit()
 print("finished init")
 
 print("rotating stepper")
