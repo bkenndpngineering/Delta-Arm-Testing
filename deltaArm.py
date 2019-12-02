@@ -187,7 +187,7 @@ class DeltaArm():
         # coordinates are in millimeters
         # is a blocking function, returns when position is reached
         tolerance = 5     # how close the arm must be to the desired coordinates to be considered "there" AKA the window
-
+        
         if self.initialized:
             (angle1, angle2, angle3) = compute_triple_inverse_kinematics(self.homedCoordinates[0] + desired_x, self.homedCoordinates[1] + desired_y, self.homedCoordinates[2] + desired_z)
             pos1 = angle1 * DEG_TO_CPR
@@ -205,7 +205,7 @@ class DeltaArm():
             z_lower = desired_z - tolerance
             z_upper = desired_z + tolerance
             while True:
-                (current_x, current_y, current_z) = self.getCoordinates()
+                (current_x, current_y, current_z) = self.getHomedCoordinates()
                 if (x_lower <= current_x <= x_upper) and (y_lower <= current_y <= y_upper) and (z_lower <= current_z <= z_upper):
                     break
 
@@ -214,16 +214,16 @@ class DeltaArm():
     def moveToRelativeCoordinates(self, offset_x, offset_y, offset_z):
         # move to a position relative to current position
         if self.initialized:
-            current_coordinates = self.getCoordinates()
+            current_coordinates = self.getHomedCoordinates()
             self.moveToCoordinates(current_coordinates[0] + offset_x, current_coordinates[1] + offset_y, current_coordinates[2] + offset_z)
 
     def getHomedCoordinates(self):
         # return coordinate position of the end effector, relative to the homed positon
         if self.initialized:
             coordinates = self.getCoordinates()
-            corrected_x = self.homedCoordinates[0] - coordinates[0]
-            corrected_y = self.homedCoordinates[1] - coordinates[1]
-            corrected_z = self.homedCoordinates[2] - coordinates[2]
+            corrected_x = coordinates[0] - self.homedCoordinates[0]
+            corrected_y = coordinates[1] - self.homedCoordinates[1]
+            corrected_z = coordinates[2] - self.homedCoordinates[2]
 
             return ((corrected_x, corrected_y, corrected_z))
 

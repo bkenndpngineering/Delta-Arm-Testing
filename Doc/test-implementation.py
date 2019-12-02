@@ -34,11 +34,11 @@ time.sleep(1)
 
 # relative movement test
 print("relative movement test")
-arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+arm.moveToRelativeCoordinates(0, 0, 50) # move up ten millimeters
 time.sleep(1)
-arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+arm.moveToRelativeCoordinates(0, 0, 50) # move up ten millimeters
 time.sleep(1)
-arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+arm.moveToRelativeCoordinates(0, 0, 50) # move up ten millimeters
 time.sleep(1)
 
 # rapid sequential movement test
