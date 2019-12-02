@@ -10,7 +10,7 @@ from kinematicFunctions import *
 import time
 
 """
-DeltaArm API V.2 by Braedan Kennedy (bkenndpngineering)
+DeltaArm API V.3 (Dec 2, 2019) by Braedan Kennedy (bkenndpngineering)
 Supplemental development by Joseph Pearman and Philip Nordblad
 
 for use with the DPEA Robot Penguin project
@@ -33,6 +33,8 @@ class DeltaArm():
         self.ax0 = None             # axis 0 of the first ODrive. Motor 1
         self.ax1 = None             # axis 1 of the first ODrive. Motor 2
         self.ax2 = None             # axis 0 of the second ODrive. Motor 3
+
+        self.homedCoordinates = None  # coordinates of the home position, use for relative movement
 
     def rotateStepper(self, degree):
         if self.initialized:
@@ -145,6 +147,11 @@ class DeltaArm():
         if self.ax2.axis.encoder.error != 0: return False
         if self.ax2.axis.controller.error != 0: return False
 
+        # calculate home coordinates
+        self.initialized = True
+        self.homedCoordinates = self.getCoordinates()
+        self.initialized = False
+
         return True
 
     def initialize(self):
@@ -176,13 +183,13 @@ class DeltaArm():
             return False
 
     def moveToCoordinates(self, desired_x, desired_y, desired_z):
-        # move to coordinate position
+        # move to coordinate position, relative to homed position
         # coordinates are in millimeters
         # is a blocking function, returns when position is reached
         tolerance = 5     # how close the arm must be to the desired coordinates to be considered "there" AKA the window
 
         if self.initialized:
-            (angle1, angle2, angle3) = compute_triple_inverse_kinematics(desired_x, desired_y, desired_z)
+            (angle1, angle2, angle3) = compute_triple_inverse_kinematics(self.homedCoordinates[0] + desired_x, self.homedCoordinates[1] + desired_y, self.homedCoordinates[2] + desired_z)
             pos1 = angle1 * DEG_TO_CPR
             pos2 = angle2 * DEG_TO_CPR
             pos3 = angle3 * DEG_TO_CPR
@@ -203,6 +210,12 @@ class DeltaArm():
                     break
 
             return
+
+    def moveToRelativeCoordinates(self, offset_x, offset_y, offset_z):
+        # move to a position relative to current position
+        if self.initialized:
+            current_coordinates = self.getCoordinates()
+            self.moveToCoordinates(current_coordinates[0] + offset_x, current_coordinates[1] + offset_y, current_coordinates[2] + offset_z)
 
     def getCoordinates(self):
         # return coordinate position of the end effector

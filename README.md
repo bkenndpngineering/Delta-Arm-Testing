@@ -1,0 +1,26 @@
+# DPEA Delta Arm API
+
+Written by Braedan Kennedy (bkenndpngineering), verified working by Joseph Pearlman and Philip Nordblad
+
+## Getting Started
+
+Clone onto the Raspberry Pi and update submodules. This Project relies on RPi_Ease_Lib for ODrive control and will not be cloned until you tell it to.
+
+### Prerequisites
+
+Follow the ODrive installation procedures on their website.
+Make sure pidev is installed (for stepper motor control).
+
+### Example
+
+View the example scripts in Doc/
+demo.py draws a star pattern forever.
+test-implementation.py shows an example implementation of everything in the API.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+Delta Arm squad is da bomb
