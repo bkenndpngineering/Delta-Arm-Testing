@@ -13,8 +13,7 @@ Make sure pidev is installed (for stepper motor control).
 
 ### Example
 
-View the example scripts in Doc/
-demo.py draws a star pattern forever.
+View the example script in Doc/
 test-implementation.py shows an example implementation of everything in the API.
 
 ## License
