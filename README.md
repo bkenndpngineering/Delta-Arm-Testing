@@ -4,7 +4,7 @@ Written by Braedan Kennedy (bkenndpngineering), verified working by Joseph Pearl
 
 ## Getting Started
 
-Clone onto the Raspberry Pi and update submodules. This Project relies on RPi_Ease_Lib for ODrive control and will not be cloned until you tell it to.
+Clone onto the Raspberry Pi and update submodules. This Project relies on RPi_Ease_Lib for ODrive control and will not be cloned until you tell git to do it.
 
 ### Prerequisites
 
@@ -19,8 +19,8 @@ test-implementation.py shows an example implementation of everything in the API.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+Free as in beer.
 
 ## Acknowledgments
 
-Delta Arm squad is da bomb
+Delta Arm squad is da bomb. 

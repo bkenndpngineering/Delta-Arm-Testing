@@ -37,12 +37,14 @@ class DeltaArm():
         self.homedCoordinates = None  # coordinates of the home position, use for relative movement
 
     def rotateStepper(self, degree):
+        # rotate stepper motor shaft in degrees
         if self.initialized:
             steps = degree * DEG_TO_STEPS
             self.stepper.relative_move(steps)
 
     def powerSolenoid(self, state):
         # Written by Joseph Pearlman and Philip Nordblad
+        # toggle solenoid on and off
         if self.initialized:
             if state == True:
                 cyprus.set_pwm_values(1, period_value=100000, compare_value=500000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
@@ -147,11 +149,6 @@ class DeltaArm():
         if self.ax2.axis.encoder.error != 0: return False
         if self.ax2.axis.controller.error != 0: return False
 
-        # calculate home coordinates
-        self.initialized = True
-        self.homedCoordinates = self.getCoordinates()
-        self.initialized = False
-
         return True
 
     def initialize(self):
@@ -171,6 +168,9 @@ class DeltaArm():
             if (HomedMotors == True): self.initialized = True
 
         if self.initialized:
+            # calculate homed coordinates
+            self.homedCoordinates = self.getCoordinates()
+
             # setup and home stepper
             self.stepper = stepper(port=0, micro_steps=32, hold_current=40, run_current=40, accel_current=40,
                                    deaccel_current=40, steps_per_unit=200,
@@ -216,6 +216,16 @@ class DeltaArm():
         if self.initialized:
             current_coordinates = self.getCoordinates()
             self.moveToCoordinates(current_coordinates[0] + offset_x, current_coordinates[1] + offset_y, current_coordinates[2] + offset_z)
+
+    def getHomedCoordinates(self):
+        # return coordinate position of the end effector, relative to the homed positon
+        if self.initialized:
+            coordinates = self.getCoordinates()
+            corrected_x = self.homedCoordinates[0] - coordinates[0]
+            corrected_y = self.homedCoordinates[1] - coordinates[1]
+            corrected_z = self.homedCoordinates[2] - coordinates[2]
+
+            return ((corrected_x, corrected_y, corrected_z))
 
     def getCoordinates(self):
         # return coordinate position of the end effector

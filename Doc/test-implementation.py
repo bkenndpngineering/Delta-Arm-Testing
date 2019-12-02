@@ -1,4 +1,5 @@
 # minimalistic script to test API functionality
+# Braedan Kennedy (Dec 2, 2019) V.2
 from deltaArm import DeltaArm
 import time
 
@@ -19,19 +20,32 @@ arm.powerSolenoid(True)
 time.sleep(2)
 print("solenoid false")
 arm.powerSolenoid(False)
+time.sleep(2)
 
 # kinematic test
-print("moving to (0, 0, -680)")
-arm.moveToCoordinates(0, 0, -680)
-print("get coordinates test:", arm.getCoordinates())
-print("moving to (0, 0, -830)")
-arm.moveToCoordinates(0, 0, -830)
-print("get coordinates test:", arm.getCoordinates())
+print("moving to (0, 0, -150)")
+arm.moveToCoordinates(0, 0, -150)
+print("get coordinates test:", arm.getHomedCoordinates())
+time.sleep(1)
+print("moving to (0, 0, -310)")
+arm.moveToCoordinates(0, 0, -310)
+print("get coordinates test:", arm.getHomedCoordinates())
+time.sleep(1)
+
+# relative movement test
+print("relative movement test")
+arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+time.sleep(1)
+arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+time.sleep(1)
+arm.moveToRelativeCoordinates(0, 0, 10) # move up ten millimeters
+time.sleep(1)
 
 # rapid sequential movement test
-arm.moveToCoordinates(0, 0, -680)
-arm.moveToCoordinates(0, 0, -750)
-arm.moveToCoordinates(0, 0, -830)
+print("sequential movement test, no delay")
+arm.moveToCoordinates(0, 0, -100)
+arm.moveToCoordinates(0, 0, -200)
+arm.moveToCoordinates(0, 0, -310)
 
 print("shutoff in 5 seconds")
 time.sleep(5)
