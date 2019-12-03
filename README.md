@@ -1,6 +1,6 @@
 # DPEA Delta Arm API
 
-Written by Braedan Kennedy (bkenndpngineering), verified working by Joseph Pearlman and Philip Nordblad
+Written by Braedan Kennedy (bkenndpngineering), verified working by JPearlz and Philip Nordblad
 
 ## Getting Started
 
