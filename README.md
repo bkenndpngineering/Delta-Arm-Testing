@@ -22,4 +22,4 @@ Free as in beer.
 
 ## Acknowledgments
 
-Delta Arm squad is da bomb. 
+Delta Arm squad is da bomb.
